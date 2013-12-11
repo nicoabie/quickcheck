@@ -1,6 +1,7 @@
 :- module(quickcheck, [ arbitrary/2
                       , arbitrary_type/1
                       , shrink/3
+                      , quickcheck/1
                       ]).
 :- use_module(library(apply), [maplist/2]).
 :- use_module(library(error), []).
@@ -126,7 +127,41 @@ shrink(string, _, X) :-
 
 %% quickcheck(+Property:atom) is semidet.
 %
-%  True if Property holds many random values.
-:- meta_predicate quickcheck(+).
+%  True if Property holds for many random values.
+:- meta_predicate quickcheck(:).
 quickcheck(Module:Property) :-
-    todo.
+    % does a predicate exist which defines the property?
+    once(Module:current_predicate(Property/N)),
+
+    % what type is each argument?
+    functor(Head, Property, N),
+    once(Module:clause(Head, _)),
+    Head =.. [Property|Args],
+
+    % run randomized tests
+    run_tests(100, Module, Property, Args).
+
+
+% TODO rewrite run_tests/4
+% it's ugly, hard to understand, uses a failure-driven loop
+% and doesn't nicely return a single status summarizing
+% whether the property holds.
+run_tests(0,_,_,_) :-
+    !.
+run_tests(N, Module, Property, Args) :-
+    maplist(generate_arguments, Args, Values),
+    Goal =.. [Property|Values],
+    ( Module:call(Goal) ->
+        debug(quickcheck, "ok ~d", [N])
+    ; % randomized test failed ->
+        debug(quickcheck, "failed ~d with ~q", [N,Goal])
+    ),
+    fail.
+run_tests(N0, Module, Property, Args) :-
+    succ(N, N0),
+    run_tests(N, Module, Property, Args).
+
+
+% separate a property argument into a variable and a type
+generate_arguments(_:Type, Value:Type) :-
+    arbitrary(Type, Value).

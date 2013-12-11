@@ -1,8 +1,11 @@
 :- use_module(library(quickcheck)).
 
-% define helper predicates here
+prop_reverse_length(L:list) :-
+    length(L, Len),
+    reverse(L, RL),
+    length(RL, Len).
 
 :- use_module(library(tap)).
 
-% add tests showing common usage
-todo :- fail.
+'reverse does not change length' :-
+    quickcheck(prop_reverse_length).
