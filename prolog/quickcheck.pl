@@ -4,7 +4,7 @@
                       , quickcheck/1
                       ]).
 :- use_module(library(apply), [maplist/2]).
-:- use_module(library(error), []).
+:- use_module(library(error), [existence_error/2]).
 :- use_module(library(random), [random_between/3, random_member/2]).
 
 :- multifile error:has_type/2.
@@ -129,12 +129,16 @@ shrink(string, _, X) :-
 %
 %  True if Property holds for many random values.
 :- meta_predicate quickcheck(:).
-quickcheck(Module:Property) :-
-    % does a predicate exist which defines the property?
-    once(Module:current_predicate(Property/N)),
+quickcheck(Module:Property/Arity) :-
+    % make sure the property predicate exists
+    ( Module:current_predicate(Property/Arity) ->
+        true
+    ; % property predicate missing ->
+        existence_error(predicate, Module:Property/Arity)
+    ),
 
     % what type is each argument?
-    functor(Head, Property, N),
+    functor(Head, Property, Arity),
     once(Module:clause(Head, _)),
     Head =.. [Property|Args],
 

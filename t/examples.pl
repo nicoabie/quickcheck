@@ -8,4 +8,4 @@ prop_reverse_length(L:list) :-
 :- use_module(library(tap)).
 
 'reverse does not change length' :-
-    quickcheck(prop_reverse_length).
+    quickcheck(prop_reverse_length/1).
