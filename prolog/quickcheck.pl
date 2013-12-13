@@ -146,29 +146,29 @@ quickcheck(Module:Property/Arity) :-
     Head =.. [Property|Args],
 
     % run randomized tests
-    run_tests(100, Module, Property, Args).
+    TestCount = 100,
+    run_tests(TestCount, Module, Property, Args, Result),
+    ( Result = ok ->
+        debug(quickcheck, "~d tests OK", [TestCount])
+    ; Result = fail(Example) ->
+        debug(quickcheck, "failed with ~q", [Example]),
+        fail
+    ).
 
 
-% TODO rewrite run_tests/4
-% it's ugly, hard to understand, uses a failure-driven loop
-% and doesn't nicely return a single status summarizing
-% whether the property holds.
-run_tests(0,_,_,_) :-
+run_tests(0,_,_,_, ok) :-
     !.
-run_tests(N, Module, Property, Args) :-
-    maplist(generate_arguments, Args, Values),
+run_tests(N0, Module, Property, Args, Result) :-
+    maplist(generate_argument, Args, Values),
     Goal =.. [Property|Values],
     ( Module:call(Goal) ->
-        debug(quickcheck, "ok ~d", [N])
-    ; % randomized test failed ->
-        debug(quickcheck, "failed ~d with ~q", [N,Goal])
-    ),
-    fail.
-run_tests(N0, Module, Property, Args) :-
-    succ(N, N0),
-    run_tests(N, Module, Property, Args).
+        N is N0 - 1,
+        run_tests(N, Module, Property, Args, Result)
+    ; % test failed ->
+        Result = fail(Goal)
+    ).
 
 
 % separate a property argument into a variable and a type
-generate_arguments(_:Type, Value:Type) :-
+generate_argument(_:Type, Value:Type) :-
     arbitrary(Type, Value).
