@@ -99,33 +99,71 @@ arbitrary_type(Type) :-
 %  cannot be shrunk any smaller. It's acceptable to produce additional
 %  shrunken values on backtracking.
 :- multifile shrink/3.
-shrink(_, X, Y) :- % integral types
-    integer(X),
-    Y is sign(X).
-shrink(atom, _, X) :-
-    shrink(codes, _, Codes),
-    atom_codes(X, Codes).
+shrink(any, X, X).
+
+shrink(atom, Atom, Shrunk) :-
+    atom_codes(Atom, Codes0),
+    shrink(codes, Codes0, Codes),
+    atom_codes(Shrunk, Codes).
+
 shrink(code, _, 0'a).
 shrink(code, _, 0'b).
 shrink(code, _, 0'c).
 shrink(code, _, 0' ).
-shrink(codes, _, []).
-shrink(codes, _, [Code]) :-
-    shrink(code, _, Code).
-shrink(list, _, []).
-shrink(list, [_|T], T).
-shrink(list, [H|T0], [H|T]) :-
-    shrink(list, T0, T).
-shrink(list(_), _, []).
-shrink(list(_), [_|T], T).
-shrink(list(Type), [H0|T0], [H|T]) :-
-    ( shrink(Type, H0, H)
-    ; H = H0
-    ),
-    shrink(list(Type), T0, T).
+
+shrink(codes, Codes0, Codes) :-
+    shrink(list(code), Codes0, Codes).
+
+shrink(integer, _, 0).  % zero often triggers bugs
+shrink(integer, X, Y) :-
+    % bisect from 1 towards the integer
+    MaxExponent is floor(log(abs(X))),
+    between(0,MaxExponent,Exponent),
+    Y is sign(X) * round(exp(Exponent)).
+shrink(integer, X, Y) :-
+    % try a positive version of a negative integer
+    X < 0,
+    Y is -X.
+
+shrink(list, L0, L) :-
+    shrink(list(any), L0, L).
+
+shrink(list(_), L0, L) :-
+    shrink_list_bisect(L0, L).
+shrink(list(Type), L0, L) :-
+    shrink_list_one(Type, L0, L).
+
 shrink(string, _, X) :-
     shrink(codes, _, Codes),
     string_codes(X, Codes).
+
+
+% help shrink lists with bisection
+shrink_list_bisect(L0, L) :-
+    length(L0, Len),
+    MaxExponent is ceil(log(Len)),
+    between(0,MaxExponent,Exponent),
+    N is round(exp(MaxExponent-Exponent)),
+    shrink_list_bisect_(L0, Len, N, L).
+
+shrink_list_bisect_([], _, _, []).
+shrink_list_bisect_(_, Len, N, []) :-
+    N > Len.
+shrink_list_bisect_(L0, Len, N, L) :-
+    length(Front, N),
+    append(Front, Back, L0),
+    ( L = Back
+    ; BackLen is Len - N,
+      shrink_list_bisect_(Back, BackLen, N, NewBack),
+      append(Front, NewBack, L)
+    ).
+
+
+shrink_list_one(_, [], []).
+shrink_list_one(Type, [H0|T], [H|T]) :-
+    shrink(Type, H0, H).
+shrink_list_one(Type, [H|T0], [H|T]) :-
+    shrink_list_one(Type, T0, T).
 
 
 %% quickcheck(+Property:atom) is semidet.
@@ -151,24 +189,35 @@ quickcheck(Module:Property/Arity) :-
     ( Result = ok ->
         debug(quickcheck, "~d tests OK", [TestCount])
     ; Result = fail(Example) ->
-        debug(quickcheck, "failed with ~q", [Example]),
-        fail
+        ExampleGoal =.. [Property|Example],
+        debug(quickcheck, "Failed test ~q", [ExampleGoal])
     ).
 
 
-run_tests(0,_,_,_, ok) :-
-    !.
-run_tests(N0, Module, Property, Args, Result) :-
+run_tests(TestCount, Module, Property, Args, fail(Example)) :-
+    between(1,TestCount,_),
     maplist(generate_argument, Args, Values),
     Goal =.. [Property|Values],
-    ( Module:call(Goal) ->
-        N is N0 - 1,
-        run_tests(N, Module, Property, Args, Result)
-    ; % test failed ->
-        Result = fail(Goal)
+    \+ Module:call(Goal),
+    !,
+
+    % try shrinking this counter example
+    ( maplist(shrink_argument, Values, Shrunk),
+      ShrinkGoal =.. [Property|Shrunk],
+      \+ Module:call(ShrinkGoal) ->
+        Example = Shrunk
+    ; % otherwise ->
+        Example = Values
     ).
+run_tests(_, _, _, _, ok).
+
 
 
 % separate a property argument into a variable and a type
 generate_argument(_:Type, Value:Type) :-
     arbitrary(Type, Value).
+
+
+% shrink a typed argument
+shrink_argument(Value:Type, Shrunken:Type) :-
+    shrink(Type, Value, Shrunken).
