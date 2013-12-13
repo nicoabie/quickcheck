@@ -1,6 +1,6 @@
 :- use_module(library(quickcheck)).
 
-prop_reverse_length(L:list) :-
+prop_reverse_length(L:list(atomic)) :-
     length(L, Len),
     reverse(L, RL),
     length(RL, Len).

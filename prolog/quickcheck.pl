@@ -30,6 +30,9 @@ arbitrary(any, X) :-
 arbitrary(atom, X) :-
     arbitrary(codes, Codes),
     atom_codes(X, Codes).
+arbitrary(atomic, X) :-
+    random_member(Type, [atom,float,integer,string]),
+    arbitrary(Type, X).
 arbitrary(between(L,U), X) :-
     random_between(L,U,X).
 arbitrary(boolean, X) :-
