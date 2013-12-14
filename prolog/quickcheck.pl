@@ -117,6 +117,7 @@ shrink(codes, Codes0, Codes) :-
 shrink(integer, _, 0).  % zero often triggers bugs
 shrink(integer, X, Y) :-
     % bisect from 1 towards the integer
+    X > 0,
     MaxExponent is floor(log(abs(X))),
     between(0,MaxExponent,Exponent),
     Y is sign(X) * round(exp(Exponent)).
@@ -141,6 +142,7 @@ shrink(string, _, X) :-
 % help shrink lists with bisection
 shrink_list_bisect(L0, L) :-
     length(L0, Len),
+    Len > 0,
     MaxExponent is ceil(log(Len)),
     between(0,MaxExponent,Exponent),
     N is round(exp(MaxExponent-Exponent)),
