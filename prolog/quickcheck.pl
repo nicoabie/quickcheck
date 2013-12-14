@@ -192,7 +192,8 @@ quickcheck(Module:Property/Arity) :-
         debug(quickcheck, "~d tests OK", [TestCount])
     ; Result = fail(Example) ->
         ExampleGoal =.. [Property|Example],
-        debug(quickcheck, "Failed test ~q", [ExampleGoal])
+        debug(quickcheck, "Failed test ~q", [ExampleGoal]),
+        fail
     ).
 
 
