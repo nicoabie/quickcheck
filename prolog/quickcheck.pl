@@ -205,7 +205,7 @@ run_tests(TestCount, Module, Property, Args, fail(Example)) :-
     !,
 
     % try shrinking this counter example
-    shrink_example(Module, Property, Values, Example).
+    shrink_example(0, Module, Property, Values, Example).
 run_tests(_, _, _, _, ok).
 
 
@@ -221,12 +221,14 @@ shrink_argument(Value:Type, Shrunken:Type) :-
 shrink_argument(Value:Type, Value:Type).
 
 
-shrink_example(Module, Property, Values, Example) :-
-    ( maplist(shrink_argument, Values, Shrunk),
-      Values \== Shrunk,
-      ShrinkGoal =.. [Property|Shrunk],
-      \+ Module:call(ShrinkGoal) ->
-        shrink_example(Module, Property, Shrunk, Example)
-    ; % otherwise ->
-        Example = Values
-    ).
+shrink_example(Depth0, Module, Property, Values, Example) :-
+    Depth0 < 32,
+    maplist(shrink_argument, Values, Shrunk),
+    Values \== Shrunk,
+    ShrinkGoal =.. [Property|Shrunk],
+    \+ Module:call(ShrinkGoal),
+    !,
+    Depth is Depth0 + 1,
+    shrink_example(Depth, Module, Property, Shrunk, Example).
+shrink_example(Depth,_,_,Example, Example) :-
+    debug(quickcheck, "Shrinking to depth ~d", [Depth]).

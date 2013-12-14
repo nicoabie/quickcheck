@@ -13,10 +13,19 @@ prop_nonsense(A:list(integer), B:list(integer)) :-
     length(B, LenB),
     LenA =< LenB.
 
+% atom_length/2 and length/2 agree
+prop_atom_lengths(A:atom) :-
+    atom_length(A, Len),
+    atom_codes(A, Codes),
+    length(Codes, Len).
+
 :- use_module(library(tap)).
 
 'reverse does not change length' :-
     quickcheck(prop_reverse_length/1).
 
-'reverse changes length'(fail) :-
+'always fails'(fail) :-
     quickcheck(prop_nonsense/2).
+
+'atom_length/2 and length/2 agree' :-
+    quickcheck(prop_atom_lengths/1).
