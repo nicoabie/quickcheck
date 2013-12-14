@@ -16,6 +16,8 @@
 
 Randomized testing of program properties in the spirit of [QuickCheck](http://hackage.haskell.org/package/QuickCheck).  Describe properties of your predicates and let `library(quickheck)` generates test cases for you.
 
+A [detailed tutorial](http://blog.ndrix.com/2013/12/quickcheck-for-prolog.html) is available.
+
 # Changes in this Version
 
   * Initial public release
