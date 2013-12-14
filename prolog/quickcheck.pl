@@ -204,13 +204,7 @@ run_tests(TestCount, Module, Property, Args, fail(Example)) :-
     !,
 
     % try shrinking this counter example
-    ( maplist(shrink_argument, Values, Shrunk),
-      ShrinkGoal =.. [Property|Shrunk],
-      \+ Module:call(ShrinkGoal) ->
-        Example = Shrunk
-    ; % otherwise ->
-        Example = Values
-    ).
+    shrink_example(Module, Property, Values, Example).
 run_tests(_, _, _, _, ok).
 
 
@@ -223,3 +217,15 @@ generate_argument(_:Type, Value:Type) :-
 % shrink a typed argument
 shrink_argument(Value:Type, Shrunken:Type) :-
     shrink(Type, Value, Shrunken).
+shrink_argument(Value:Type, Value:Type).
+
+
+shrink_example(Module, Property, Values, Example) :-
+    ( maplist(shrink_argument, Values, Shrunk),
+      Values \== Shrunk,
+      ShrinkGoal =.. [Property|Shrunk],
+      \+ Module:call(ShrinkGoal) ->
+        shrink_example(Module, Property, Shrunk, Example)
+    ; % otherwise ->
+        Example = Values
+    ).
