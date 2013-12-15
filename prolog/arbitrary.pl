@@ -13,6 +13,7 @@ arbitrary(any, X) :-
          , ( arbitrary_type(Type)
            , ground(Type)  % exclude parameterized types
            , Type \== any  % don't recurse
+           , Type \== arbitrary_type
            )
          , Types
          ),
