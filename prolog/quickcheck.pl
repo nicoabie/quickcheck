@@ -9,6 +9,32 @@
 %
 %  Generate a random Value of Type. If you define your own types, add
 %  clauses to this multifile predicate to support them in quickcheck.
+%  When defining your own types, it can be helpful to call arbitrary/2
+%  recursively or to use library(random).
+%
+%  The following types from library(error) have built in support.
+%
+%    * `any`
+%    * `atom`
+%    * `atomic`
+%    * between(L,U)
+%    * `boolean`
+%    * `chars`
+%    * `code` - printable ASCII for now
+%    * `codes`
+%    * `encoding`
+%    * `float`
+%    * `integer`
+%    * `list`
+%    * list(T)
+%    * `negative_integer`
+%    * `nonneg`
+%    * `number`
+%    * oneof(L)
+%    * `positive_integer`
+%    * `rational`
+%    * `string`
+%    * `text`
 :- multifile arbitrary/2.
 
 %% arbitrary_type(?Type) is multi
@@ -22,12 +48,14 @@
 %
 %  True if Smaller is a "smaller" version of Value according to the
 %  semantics of Type. This predicate is called after
-%  quickcheck finds a Value for which a property fails. By shrinking
-%  values, we can obtain a more minimal test case.
+%  quickcheck finds a Value for which a property fails. By recursively
+%  shrinking values, we can obtain a minimal, failing example.
 %
 %  When defining shrink/3 for your own types, be sure to fail if Value
 %  cannot be shrunk any smaller. It's acceptable to produce additional
-%  shrunken values on backtracking.
+%  shrunken values on backtracking. It's often best to bisect your
+%  type's values (rather than iterating all possible, smaller values) if
+%  bisecting makes for your type.
 :- multifile shrink/3.
 
 :- [shrink].
@@ -35,7 +63,9 @@
 
 %% quickcheck(+Property:atom) is semidet.
 %
-%  True if Property holds for many random values.
+%  True if Property holds for many random values. Property should be a
+%  Name/Arity term. For now, details about test results are displayed
+%  with debug/3 using the topic `quickcheck`.
 :- meta_predicate quickcheck(:).
 quickcheck(Module:Property/Arity) :-
     % make sure the property predicate exists
