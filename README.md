@@ -18,13 +18,9 @@ Randomized testing of program properties in the spirit of [QuickCheck](http://ha
 
 A [detailed tutorial](http://blog.ndrix.com/2013/12/quickcheck-for-prolog.html) is available.
 
-# Changes in this Version
-
-  * Initial public release
-
 # Installation
 
-Using SWI-Prolog 6.3 or later:
+Using SWI-Prolog 7.1 or later:
 
     ?- pack_install(quickcheck).
 
