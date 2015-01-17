@@ -7,11 +7,10 @@
         reverse(L, R),
         reverse(R, L).
 
-    ?- debug(quickcheck).
     ?- quickcheck(prop_reverse_twice/1).
-    % 100 tests OK
+    100 tests OK
     true.
-    
+
 
 # Description
 

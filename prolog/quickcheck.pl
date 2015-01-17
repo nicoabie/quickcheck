@@ -64,8 +64,8 @@
 %% quickcheck(+Property:atom) is semidet.
 %
 %  True if Property holds for many random values. Property should be a
-%  Name/Arity term. For now, details about test results are displayed
-%  with debug/3 using the topic `quickcheck`.
+%  Name/Arity term. Details about test results are displayed
+%  on the `user_error` stream.
 :- meta_predicate quickcheck(:).
 quickcheck(Module:Property/Arity) :-
     % make sure the property predicate exists
@@ -84,10 +84,10 @@ quickcheck(Module:Property/Arity) :-
     TestCount = 100,
     run_tests(TestCount, Module, Property, Args, Result),
     ( Result = ok ->
-        debug(quickcheck, "~d tests OK", [TestCount])
+        warn("~d tests OK~n", [TestCount])
     ; Result = fail(Example) ->
         ExampleGoal =.. [Property|Example],
-        debug(quickcheck, "Failed test ~q", [ExampleGoal]),
+        warn("Failed test ~q~n", [ExampleGoal]),
         fail
     ).
 
@@ -126,4 +126,8 @@ shrink_example(Depth0, Module, Property, Values, Example) :-
     Depth is Depth0 + 1,
     shrink_example(Depth, Module, Property, Shrunk, Example).
 shrink_example(Depth,_,_,Example, Example) :-
-    debug(quickcheck, "Shrinking to depth ~d", [Depth]).
+    warn("Shrinking to depth ~d~n", [Depth]).
+
+
+warn(Format,Args) :-
+    format(user_error,Format,Args).
