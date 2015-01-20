@@ -84,10 +84,10 @@ quickcheck(Module:Property/Arity) :-
     TestCount = 100,
     run_tests(TestCount, Module, Property, Args, Result),
     ( Result = ok ->
-        warn("~d tests OK~n", [TestCount])
+        warn("~d tests OK", [TestCount])
     ; Result = fail(Example) ->
         ExampleGoal =.. [Property|Example],
-        warn("Failed test ~q~n", [ExampleGoal]),
+        warn("Failed test ~q", [ExampleGoal]),
         fail
     ).
 
@@ -126,8 +126,13 @@ shrink_example(Depth0, Module, Property, Values, Example) :-
     Depth is Depth0 + 1,
     shrink_example(Depth, Module, Property, Shrunk, Example).
 shrink_example(Depth,_,_,Example, Example) :-
-    warn("Shrinking to depth ~d~n", [Depth]).
+    warn("Shrinking to depth ~d", [Depth]).
 
 
 warn(Format,Args) :-
-    format(user_error,Format,Args).
+    current_module(tap_raw),
+    !,
+    ( tap_raw:is_test_running -> tap_raw:diag(Format,Args); true ).
+warn(Format,Args) :-
+    format(user_error,Format,Args),
+    format(user_error,"~n",[]).
