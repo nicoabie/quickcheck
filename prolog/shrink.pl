@@ -1,3 +1,4 @@
+:- use_module(library(lists)).
 
 
 shrink(any, X, X).
@@ -44,7 +45,7 @@ shrink(string, _, X) :-
 shrink_list_bisect(L0, L) :-
     length(L0, Len),
     Len > 0,
-    MaxExponent is ceil(log(Len)),
+    MaxExponent is ceiling(log(Len)),
     between(0,MaxExponent,Exponent),
     N is round(exp(MaxExponent-Exponent)),
     shrink_list_bisect_(L0, Len, N, L).

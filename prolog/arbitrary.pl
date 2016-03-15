@@ -3,6 +3,25 @@
 :- use_module(library(apply), [maplist/2]).
 :- use_module(library(random), [random_between/3, random_member/2]).
 
+:- if(\+predicate_property(random_between(_, _, _), _)).
+
+:- use_module(library(random), [random/3]).
+
+random_between(Lo, Hi, X) :-
+        random(Lo, Hi, X).
+
+:- endif.
+
+:- if(\+predicate_property(random_member(_, _), _)).
+
+random_member(X, Xs) :-
+        length(Xs, N),
+        random_between(1, N, I),
+        nth(I, Xs, X).
+
+:- endif.
+
+
 :- multifile error:has_type/2.
 error:has_type(arbitrary_type, Type) :-
     nonvar(Type),
@@ -53,7 +72,7 @@ arbitrary(float, X) :-
     X is I * random_float.
 
 arbitrary(integer, X) :-
-    random_between(-30_000, 30_000, X).
+    random_between(-30000, 30000, X).
 
 arbitrary(list, X) :-
     arbitrary(list(any), X).
@@ -64,10 +83,10 @@ arbitrary(list(T), X) :-
     maplist(arbitrary(T), X).
 
 arbitrary(negative_integer, X) :-
-    random_between(-30_000, 1, X).
+    random_between(-30000, 1, X).
 
 arbitrary(nonneg, X) :-
-    random_between(0, 30_000, X).
+    random_between(0, 30000, X).
 
 arbitrary(number, X) :-
     random_member(Type, [integer, float]),
@@ -77,7 +96,7 @@ arbitrary(oneof(L), X) :-
     random_member(X, L).
 
 arbitrary(positive_integer, X) :-
-    random_between(1, 30_000, X).
+    random_between(1, 30000, X).
 
 arbitrary(rational, X) :-
     arbitrary(integer, Numerator),
