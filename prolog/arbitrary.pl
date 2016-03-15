@@ -1,8 +1,14 @@
 % define arbitrary/2 and friends
 
 :- use_module(library(apply), [maplist/2]).
-:- use_module(library(random), [random_between/3, random_member/2]).
 
+:- if(\+ predicate_property(maplist(_,  _, _),_)).
+
+:- use_module(library(apply_macros), [maplist/3]).
+
+:- endif.
+
+:- use_module(library(random), [random_between/3, random_member/2]).
 :- if(\+predicate_property(random_between(_, _, _), _)).
 
 :- use_module(library(random), [random/3]).
