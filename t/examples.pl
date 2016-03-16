@@ -1,4 +1,5 @@
 :- use_module(library(quickcheck)).
+:- use_module(library(lists)).
 
 % reversing a list leaves its length the same
 prop_reverse_length(L:list(integer)) :-
