@@ -54,7 +54,11 @@ arbitrary(atomic, X) :-
     arbitrary(Type, X).
 
 arbitrary(between(L,U), X) :-
-    random_between(L,U,X).
+        ((integer(L), integer(U)) ->
+         random_between(L,U,X)
+        ;
+         random(L, U, X)
+        ).
 
 arbitrary(boolean, X) :-
     random_member(X, [true, false]).
