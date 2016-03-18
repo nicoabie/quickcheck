@@ -8,7 +8,7 @@
 
 :- endif.
 
-:- use_module(library(random), [random_between/3, random_member/2]).
+:- use_module(library(random), [random_between/3, random_member/2, random/1]).
 :- if(\+predicate_property(random_between(_, _, _), _)).
 
 :- use_module(library(random), [random/3]).
@@ -75,7 +75,8 @@ arbitrary(encoding, X) :-
 
 arbitrary(float, X) :-
     arbitrary(integer, I),
-    X is I * random_float.
+    random(F), 
+    X is I * F.
 
 arbitrary(integer, X) :-
     random_between(-30000, 30000, X).
