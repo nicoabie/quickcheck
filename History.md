@@ -1,3 +1,8 @@
+# v0.2.0 (2016-03-19)
+
+  * More YAP compatible changes
+  * Fix arbitrary/2 for between/2 with floats
+
 # v0.1.1 (2016-03-16)
 
   * Make compatible with YAP
