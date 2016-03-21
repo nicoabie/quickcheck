@@ -36,9 +36,10 @@ shrink(list(_), L0, L) :-
 shrink(list(Type), L0, L) :-
     shrink_list_one(Type, L0, L).
 
-shrink(string, _, X) :-
-    shrink(codes, _, Codes),
-    string_codes(X, Codes).
+shrink(string, S, Shrunk) :-
+    string_codes(S, Codes),
+    shrink(codes, Codes, Codes1),
+    string_codes(Shrunk, Codes1).
 
 
 % help shrink lists with bisection
