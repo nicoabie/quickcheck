@@ -1,5 +1,9 @@
 :- use_module(library(quickcheck)).
 :- use_module(library(lists)).
+:- use_module(library(settings)).
+
+% Set the number of random test cases to 200
+:- set_setting(quickcheck:test_count, 200). 
 
 % reversing a list leaves its length the same
 prop_reverse_length(L:list(integer)) :-
