@@ -4,6 +4,12 @@
                       , quickcheck/1
                       ]).
 :- use_module(library(error), [existence_error/2]).
+:- use_module(library(settings), [setting/4, setting/2]).
+
+% Module settings
+% ---------------
+:- setting( test_count, positive_integer, 100, 'Number of random test cases to generate for each test.').
+
 
 %% arbitrary(+Type, -Value) is det.
 %
@@ -81,7 +87,7 @@ quickcheck(Module:Property/Arity) :-
     Head =.. [Property|Args],
 
     % run randomized tests
-    TestCount = 100,
+    setting(test_count, TestCount),
     run_tests(TestCount, Module, Property, Args, Result),
     ( Result = ok ->
         warn("~d tests OK", [TestCount])
