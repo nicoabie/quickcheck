@@ -1,11 +1,11 @@
 name(quickcheck).
 title('QuickCheck randomized testing').
 
-version('0.2.0').
-download('https://github.com/mndrix/quickcheck/archive/v0.2.0.zip').
+version('0.2.1').
+download('https://github.com/nicoabie/quickcheck/archive/v0.2.1.zip').
 
 author('Michael Hendricks','michael@ndrix.org').
-packager('Michael Hendricks','michael@ndrix.org').
-maintainer('Michael Hendricks','michael@ndrix.org').
+packager('Nico Gallinal','nicoabie@gmail.com').
+maintainer('Nico Gallinal','nicoabie@gmail.com').
 
-home('https://github.com/mndrix/quickcheck').
+home('https://github.com/nicoabie/quickcheck').

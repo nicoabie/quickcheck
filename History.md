@@ -1,3 +1,8 @@
+# v0.2.1 (2019-05-07)
+
+  * Fix issue #12
+  * Fix arbitrary/2 for negative_integer
+
 # v0.2.0 (2016-03-19)
 
   * More YAP compatible changes
