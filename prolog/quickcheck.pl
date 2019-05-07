@@ -135,10 +135,12 @@ shrink_example(Depth,_,_,Example, Example) :-
     warn("Shrinking to depth ~d", [Depth]).
 
 
+:- dynamic tap_raw:diag/2.
+
 warn(Format,Args) :-
     current_module(tap_raw),
     !,
-    ( tap_raw:is_test_running -> tap_raw:diag(Format,Args); true ).
+    tap_raw:diag(Format,Args).
 warn(Format,Args) :-
     format(user_error,Format,Args),
     format(user_error,"~n",[]).
