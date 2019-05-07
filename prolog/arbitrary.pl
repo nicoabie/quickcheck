@@ -94,7 +94,7 @@ arbitrary(list(T), X) :-
     maplist(arbitrary(T), X).
 
 arbitrary(negative_integer, X) :-
-    random_between(-30000, 1, X).
+    random_between(-30000, -1, X).
 
 arbitrary(nonneg, X) :-
     random_between(0, 30000, X).
