@@ -1,4 +1,4 @@
-:- use_module('../prolog/quickcheck.pl').
+:- use_module(library(quickcheck)).
 :- use_module(library(settings)).
 
 :- set_setting(quickcheck:test_count, 10000). 
