@@ -1,3 +1,7 @@
+:- use_module(library(prolog_pack)).
+
+:- if(prolog_pack:current_pack(tap)).
+
 :- use_module(prolog/quickcheck).
 
 prop_integer(I:integer) :-
@@ -15,3 +19,9 @@ prop_nonsense(A:list(integer), B:list(integer)) :-
 
 'always fails'(fail) :-
   quickcheck(prop_nonsense/2).
+
+:- else.
+  % if tap is not currently installed
+  % create an empty main goal.
+  main.
+:- endif.
