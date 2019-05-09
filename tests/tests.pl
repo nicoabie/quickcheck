@@ -5,5 +5,6 @@
 
 :- load_files([
   tests/arbitrary/float,
-  tests/arbitrary/negative_integer
+  tests/arbitrary/negative_integer,
+  tests/shrink/string
 ], [ if(not_loaded) ]).

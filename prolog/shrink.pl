@@ -36,9 +36,10 @@ shrink(list(_), L0, L) :-
 shrink(list(Type), L0, L) :-
     shrink_list_one(Type, L0, L).
 
-shrink(string, _, X) :-
-    shrink(codes, _, Codes),
-    string_codes(X, Codes).
+shrink(string, String, Shrunk) :-
+    string_codes(String, Codes),
+    subset_gen(ShrunkCodes, Codes),
+    string_codes(Shrunk, ShrunkCodes).
 
 
 % help shrink lists with bisection
@@ -69,3 +70,14 @@ shrink_list_one(Type, [H0|T], [H|T]) :-
     shrink(Type, H0, H).
 shrink_list_one(Type, [H|T0], [H|T]) :-
     shrink_list_one(Type, T0, T).
+
+
+%% subset_gen(-Subset, +Set) is det.
+%
+% Generates subsets for the given set.
+%
+% base case
+subset_gen([], []).
+% inductive case
+subset_gen(Subset, [_ | Set]) :- subset_gen(Subset, Set).
+subset_gen([H |Subset], [H | Set]) :- subset_gen(Subset, Set).
