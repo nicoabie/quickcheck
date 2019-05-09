@@ -16,4 +16,4 @@ install:
 	echo "(none)"
 
 test:
-	@$(SWIPL) -q -g 'main,halt(0)' -t 'halt(1)' -s tests/tests.pl
+	@$(SWIPL) -s tests/tests.pl -g 'run_tests,halt(0)' -t 'halt(1)'
