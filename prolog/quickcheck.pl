@@ -34,7 +34,7 @@
 %    * `list`
 %    * list(T)
 %    * `negative_integer`
-%    * `nonneg`
+%    * `nonneg alias natural`
 %    * `number`
 %    * oneof(L)
 %    * `positive_integer`
