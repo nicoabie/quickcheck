@@ -43,10 +43,6 @@
 %    * `text`
 :- multifile arbitrary/2.
 
-%% arbitrary_type(?Type) is multi
-%
-%  True if Type supports arbitrary/2.
-
 :- [arbitrary].
 
 

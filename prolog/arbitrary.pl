@@ -27,6 +27,9 @@ random_member(X, Xs) :-
 
 :- endif.
 
+%% arbitrary_type(?Type) is multi
+%
+%  True if Type supports arbitrary/2.
 arbitrary_type(Type) :-
     clause(arbitrary(Type, _), _).
 
