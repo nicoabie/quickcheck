@@ -1,4 +1,3 @@
-:- use_module(prolog/quickcheck).
 :- begin_tests(arbitrary_float).
 
 prop_float(F:float) :-

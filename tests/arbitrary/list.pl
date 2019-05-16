@@ -1,4 +1,3 @@
-:- use_module(prolog/quickcheck).
 :- begin_tests(arbitrary_list).
 
 prop_list_string(Ls:list(string)) :-

@@ -1,4 +1,3 @@
-:- use_module(prolog/quickcheck).
 :- begin_tests(arbitrary_negative_integer).
 
 prop_negative_integer(I:negative_integer) :-

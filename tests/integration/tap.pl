@@ -2,8 +2,6 @@
 
 :- if(prolog_pack:current_pack(tap)).
 
-:- use_module(prolog/quickcheck).
-
 prop_integer(I:integer) :-
   integer(I).
 

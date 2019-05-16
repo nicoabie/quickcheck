@@ -1,11 +1,19 @@
-:- use_module(prolog/quickcheck).
+:- dynamic user:file_search_path/2.
+:- multifile user:file_search_path/2.
+
+% Add the package source files relative to the current file location
+:- prolog_load_context(directory, Dir),
+   atom_concat(Dir, '/../prolog', PackageDir),
+   asserta(user:file_search_path(package, PackageDir)).
+
+:- use_module(package(quickcheck)).
 :- use_module(library(settings)).
 
 :- set_setting(quickcheck:test_count, 100). 
 
 :- load_files([
-  tests/arbitrary/float,
-  tests/arbitrary/list,
-  tests/arbitrary/negative_integer,
-  tests/shrink/string
+  arbitrary/float,
+  arbitrary/list,
+  arbitrary/negative_integer,
+  shrink/string
 ], [ if(not_loaded) ]).

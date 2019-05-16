@@ -1,4 +1,3 @@
-:- use_module(prolog/quickcheck).
 :- begin_tests(shrink_string).
 
 test('quickcheck:shrink(string, "", X) does not throw an exception on backtracking') :-
