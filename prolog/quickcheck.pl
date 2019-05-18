@@ -157,8 +157,10 @@ shrink_example(Depth0, Module, Property, ValuesWithBaseTypes, Example) :-
     !,
     Depth is Depth0 + 1,
     shrink_example(Depth, Module, Property, ShrunkWithBaseTypes, Example).
-shrink_example(Depth,_,_,Example, Example) :-
-    warn("Shrinking to depth ~d", [Depth]).
+shrink_example(Depth,_,_,ValuesWithBaseTypes, Example) :-
+    warn("Shrinking to depth ~d", [Depth]),
+    % omit base types in example
+    maplist(head, ValuesWithBaseTypes, Example).
 
 :- dynamic tap_raw:is_test_running/0, tap_raw:diag/2.
 
