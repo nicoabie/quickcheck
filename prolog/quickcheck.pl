@@ -97,73 +97,76 @@ quickcheck(Module:Property/Arity) :-
         fail
     ).
 
+head([H|_], H).
 
 run_tests(TestCount, Module, Property, Args, fail(Example)) :-
     between(1,TestCount,_),
-    maplist(generate_argument, Args, Values),
+    generate_arguments(Args, Values, ValuesWithBaseTypes),
     Goal =.. [Property|Values],
     \+ Module:call(Goal),
     !,
 
     % try shrinking this counter example
-    shrink_example(0, Module, Property, Values, Example).
+    shrink_example(0, Module, Property, ValuesWithBaseTypes, Example).
 run_tests(_, _, _, _, ok).
 
 
 
 % separate a property argument into a variable and a type
-generate_argument(_:Type, Value:Type) :-
+generate_argument(_:Type, [Value:Type]) :-
     arbitrary(Type, Value).
 
-generate_argument(_:Type, Value:Type) :-
+generate_argument(_:Type, [Value:Type, BaseValue:BaseType]) :-
     % verify there is a composite of the given type
     clause(composite(Type, _:BaseType, _), _),
-    generate_argument(_:BaseType, BaseValue:BaseType),
+    generate_argument(_:BaseType, [BaseValue:BaseType]),
     composite(Type, BaseValue:BaseType, Value).
 
+generate_arguments(Args, Values, ValuesWithBaseTypes) :-
+    maplist(generate_argument, Args, ValuesWithBaseTypes),
+    maplist(head, ValuesWithBaseTypes, Values).
 
 % shrink a typed argument
-shrink_argument(Value:Type, Shrunken:Type) :-
+shrink_argument([Value:Type], Shrunken:Type) :-
     shrink(Type, Value, Shrunken).
 
 % shrink a composite argument
 % we are not interested in the current value
 % we need to generate shrunken values of the base
 % arbitrary and then make a composite
-shrink_argument(_:Type, Shrunken:Type) :-
+shrink_argument([_:Type, BaseValue:BaseType], Shrunken:Type) :-
     % verify there is a composite of the given type
     clause(composite(Type, _:BaseType, _), _),
-    generate_argument(_:BaseType, BaseValue:BaseType),
-    shrink_argument(BaseValue:BaseType, ShrunkenValue:BaseType),
+    shrink_argument([BaseValue:BaseType], ShrunkenValue:BaseType),
     composite(Type, ShrunkenValue:BaseType, Shrunken).
-
-% shrink_argument(_, Value:Type, Shrunken:Type) :-
-%     % verify there is a composite of the given type
-%     clause(composite(Type, _, _), _),
-%     !,
-%     shrink_argument(BaseValue:BaseType, ShrunkenValue:BaseType),
-%     composite(Type, ShrunkenValue:BaseType, Shrunken).
-
 
 % there is no shrinker for the given Type
 % return the same Value as shrunken
 shrink_argument(Value:Type, Value:Type).
 
-shrink_arguments(Values, Shrunk) :-
-    maplist(shrink_argument, Values, Shrunk).
+shrink_arguments(ValuesWithBaseTypes, Values, Shrunk) :-
+    maplist(shrink_argument, ValuesWithBaseTypes, Shrunk),
+    maplist(head, ValuesWithBaseTypes, Values).
 
-shrink_example(Depth0, Module, Property, Values, Example) :-
+shrink_example(Depth0, Module, Property, ValuesWithBaseTypes, Example) :-
     Depth0 < 32,
-    shrink_arguments(Values, Shrunk),
+    shrink_arguments(ValuesWithBaseTypes, Values, Shrunk),
     Values \== Shrunk,
     ShrinkGoal =.. [Property|Shrunk],
     \+ Module:call(ShrinkGoal),
     !,
     Depth is Depth0 + 1,
-    shrink_example(Depth, Module, Property, Shrunk, Example).
+    replace_firsts_with_elems(ValuesWithBaseTypes, Shrunk, ShrunkWithBaseTypes),
+    shrink_example(Depth, Module, Property, ShrunkWithBaseTypes, Example).
 shrink_example(Depth,_,_,Example, Example) :-
     warn("Shrinking to depth ~d", [Depth]).
 
+
+replace_firsts_with_elems([], [], []).
+replace_firsts_with_elems([HL|TL], [HE|TE], R) :-
+  HL = [_|THL],
+  R = [[HE|THL]|RR],
+  replace_firsts_with_elems(TL, TE, RR).
 
 :- dynamic tap_raw:is_test_running/0, tap_raw:diag/2.
 
