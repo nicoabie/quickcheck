@@ -13,7 +13,9 @@
 
 :- load_files([
   arbitrary/float,
+  arbitrary/integer,
   arbitrary/list,
   arbitrary/negative_integer,
-  shrink/string
+  shrink/string,
+  shrink/composite
 ], [ if(not_loaded) ]).

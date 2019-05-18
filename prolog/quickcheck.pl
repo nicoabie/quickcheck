@@ -62,6 +62,10 @@
 
 :- [shrink].
 
+%% composite(+Type, +Arbitrary:BaseType, -Value) is det.
+%
+%  Generate a random Value of Type from a given Arbitrary.
+:- multifile composite/3.
 
 %% quickcheck(+Property:atom) is semidet.
 %
@@ -111,16 +115,46 @@ run_tests(_, _, _, _, ok).
 generate_argument(_:Type, Value:Type) :-
     arbitrary(Type, Value).
 
+generate_argument(_:Type, Value:Type) :-
+    % verify there is a composite of the given type
+    clause(composite(Type, _:BaseType, _), _),
+    generate_argument(_:BaseType, BaseValue:BaseType),
+    composite(Type, BaseValue:BaseType, Value).
+
 
 % shrink a typed argument
 shrink_argument(Value:Type, Shrunken:Type) :-
     shrink(Type, Value, Shrunken).
+
+% shrink a composite argument
+% we are not interested in the current value
+% we need to generate shrunken values of the base
+% arbitrary and then make a composite
+shrink_argument(_:Type, Shrunken:Type) :-
+    % verify there is a composite of the given type
+    clause(composite(Type, _:BaseType, _), _),
+    generate_argument(_:BaseType, BaseValue:BaseType),
+    shrink_argument(BaseValue:BaseType, ShrunkenValue:BaseType),
+    composite(Type, ShrunkenValue:BaseType, Shrunken).
+
+% shrink_argument(_, Value:Type, Shrunken:Type) :-
+%     % verify there is a composite of the given type
+%     clause(composite(Type, _, _), _),
+%     !,
+%     shrink_argument(BaseValue:BaseType, ShrunkenValue:BaseType),
+%     composite(Type, ShrunkenValue:BaseType, Shrunken).
+
+
+% there is no shrinker for the given Type
+% return the same Value as shrunken
 shrink_argument(Value:Type, Value:Type).
 
+shrink_arguments(Values, Shrunk) :-
+    maplist(shrink_argument, Values, Shrunk).
 
 shrink_example(Depth0, Module, Property, Values, Example) :-
     Depth0 < 32,
-    maplist(shrink_argument, Values, Shrunk),
+    shrink_arguments(Values, Shrunk),
     Values \== Shrunk,
     ShrinkGoal =.. [Property|Shrunk],
     \+ Module:call(ShrinkGoal),
