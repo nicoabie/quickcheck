@@ -98,7 +98,7 @@ run_tests(TestCount, Module, Property, Args, fail(Example)) :-
     between(1,TestCount,_),
     maplist(generate_argument, Args, Values),
     Goal =.. [Property|Values],
-    \+ Module:call(Goal),
+    \+ Module:Goal,
     !,
 
     % try shrinking this counter example
@@ -123,7 +123,7 @@ shrink_example(Depth0, Module, Property, Values, Example) :-
     maplist(shrink_argument, Values, Shrunk),
     Values \== Shrunk,
     ShrinkGoal =.. [Property|Shrunk],
-    \+ Module:call(ShrinkGoal),
+    \+ Module:ShrinkGoal,
     !,
     Depth is Depth0 + 1,
     shrink_example(Depth, Module, Property, Shrunk, Example).
