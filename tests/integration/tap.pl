@@ -10,6 +10,7 @@ prop_nonsense(A:list(integer), B:list(integer)) :-
   length(B, LenB),
   LenA =< LenB.
 
+:- use_module(library(quickcheck)).
 :- use_module(library(tap)).
 
 'always succeeds' :-
