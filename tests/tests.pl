@@ -16,6 +16,7 @@
   arbitrary/integer,
   arbitrary/list,
   arbitrary/negative_integer,
+  composite/single_argument,
   shrink/string,
   shrink/composite
 ], [ if(not_loaded) ]).

@@ -1,8 +1,7 @@
 :- begin_tests(arbitrary_integer).
 
 prop_integer(I:integer) :-
-    is_of_type(integer, I),
-    I < 4.
+    is_of_type(integer, I).
 
 test('integer never produces other than integer') :-
   quickcheck(prop_integer/1).
