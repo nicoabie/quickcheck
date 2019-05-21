@@ -17,8 +17,10 @@ prop_tuple(T:tuple) :-
   string_length(S, L),
   L < 4.
 
-% TODO assert shrink counter example
-test('nonsense, tuples cannot have large string', fail) :-
-  quickcheck(prop_tuple/1).
+% TODO find a way to use setting(test_count, TestCount) instead of nasty hard-coded 200.
+test('nonsense, tuples cannot have large string', [forall(between(1, 200, _))]) :-
+  catch(quickcheck(prop_tuple/1), error(domain_error(counter_example, [(_, String):tuple]), _), true),
+  string_length(String, Len),
+  Len >= 4.
 
 :- end_tests(shrink_composite_many).
