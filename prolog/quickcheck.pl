@@ -103,7 +103,7 @@ run_tests(TestCount, Module, Property, Args, fail(Example)) :-
     between(1,TestCount,_),
     generate_arguments(Args, Values, ValuesWithBaseTypes),
     Goal =.. [Property|Values],
-    \+ Module:call(Goal),
+    \+ Module:Goal,
     !,
 
     % try shrinking this counter example
@@ -164,7 +164,7 @@ shrink_example(Depth0, Module, Property, ValuesWithBaseTypes, Example) :-
     shrink_arguments(ValuesWithBaseTypes, Shrunk, ShrunkWithBaseTypes),
     ValuesWithBaseTypes \== ShrunkWithBaseTypes,
     ShrinkGoal =.. [Property|Shrunk],
-    \+ Module:call(ShrinkGoal),
+    \+ Module:ShrinkGoal,
     !,
     Depth is Depth0 + 1,
     shrink_example(Depth, Module, Property, ShrunkWithBaseTypes, Example).
