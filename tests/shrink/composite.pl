@@ -20,7 +20,7 @@ prop_even_numbers(E:even) :-
 
 % TODO find a way to use setting(test_count, TestCount) instead of nasty hard-coded 200.
 test('all even numbers mod two equals zero', [forall(between(1, 200, _))]) :-
-  catch(quickcheck(prop_even_numbers/1), error(domain_error(counter_example, [E:even]), _), true),
+  catch(quickcheck(prop_even_numbers/1), error(counter_example, [E:even]), true),
   E >= 12.
 
 % an odd plus an even is an odd
@@ -31,7 +31,7 @@ prop_odd_plus_even(O:odd, E:even) :-
 
 % TODO find a way to use setting(test_count, TestCount) instead of nasty hard-coded 200.
 test('even numbers plus odd numbers gives odd', [forall(between(1, 200, _))]) :-
-  catch(quickcheck(prop_odd_plus_even/2), error(domain_error(counter_example, [O:odd, E:even]), _), true),
+  catch(quickcheck(prop_odd_plus_even/2), error(counter_example, [O:odd, E:even]), true),
   S is O + E,
   S >= 4.
 

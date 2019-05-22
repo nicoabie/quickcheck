@@ -94,7 +94,7 @@ quickcheck(Module:Property/Arity) :-
     ; Result = fail(Example) ->
         ExampleGoal =.. [Property|Example],
         warn("Failed test ~q", [ExampleGoal]),
-        throw(error(domain_error(counter_example, Example) ,_))
+        throw(error(counter_example, Example))
     ).
 
 head([H|_], H).
