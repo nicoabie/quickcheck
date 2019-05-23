@@ -15,5 +15,6 @@
   arbitrary/float,
   arbitrary/list,
   arbitrary/negative_integer,
+  arbitrary/arbitrary_type,
   shrink/string
 ], [ if(not_loaded) ]).
