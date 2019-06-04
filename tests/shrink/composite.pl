@@ -5,10 +5,8 @@ quickcheck:composite(even, I:integer, X) :-
 quickcheck:composite(odd, I:integer, X) :-
   X is 2 * I + 1.
 
-% TODO maybe it is possible to use the composite
-% itself to check if hast_type
-:- multifile error:has_type/2.
-error:has_type(odd, X) :-
+:- multifile quickcheck:has_type/2.
+quickcheck:has_type(odd, X) :-
   integer(X),
   1 is X mod 2.
 

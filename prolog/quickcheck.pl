@@ -67,6 +67,8 @@
 %  Generate a random Value of Type from a given Arbitrary.
 :- multifile composite/3.
 
+:- [composite].
+
 %% quickcheck(+Property:atom) is semidet.
 %
 %  True if Property holds for many random values. Property should be a

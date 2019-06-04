@@ -2,14 +2,6 @@
 quickcheck:composite(tuple, [I:integer, S:string], X) :-
   X = (I,S).
 
-% TODO maybe it is possible to use the composite
-% itself to check if hast_type
-:- multifile error:has_type/2.
-error:has_type(tuple, X) :-
-  X = (I,S),
-  integer(I),
-  string(S).
-
 :- begin_tests(shrink_composite_many).
 
 prop_tuple(T:tuple) :-
@@ -22,5 +14,14 @@ test('nonsense, tuples cannot have large string', [forall(between(1, 200, _))]) 
   catch(quickcheck(prop_tuple/1), error(counter_example, [(_, String):tuple]), true),
   string_length(String, Len),
   Len >= 4.
+
+prop_tuple_sum((AI, AS):tuple, (BI, BS):tuple) :-
+  CI is AI + BI,
+  string_concat(AS, BS, CS),
+  TS = (CI, CS),
+  is_of_type(tuple, TS).
+
+test('tuples can be summed') :-
+  quickcheck(prop_tuple_sum/2).
 
 :- end_tests(shrink_composite_many).

@@ -33,6 +33,7 @@ random_member(X, Xs) :-
 arbitrary_type(Type) :-
     clause(arbitrary(Type, _), _).
 
+% TODO does this code make any sense?
 :- multifile error:has_type/2.
 error:has_type(arbitrary_type, Type) :-
     nonvar(Type),
