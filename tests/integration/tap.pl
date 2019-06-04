@@ -16,7 +16,7 @@ prop_nonsense(A:list(integer), B:list(integer)) :-
 'always succeeds' :-
   quickcheck(prop_integer/1).
 
-'always fails'(fail) :-
+'always fails'(error(_)) :-
   quickcheck(prop_nonsense/2).
 
 :- else.

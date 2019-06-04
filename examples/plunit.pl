@@ -13,7 +13,7 @@ prop_silly_list(L:list(integer)) :-
 test('reverse twice') :-
     quickcheck(prop_reverse_twice/1).
 
-test('silly list', [fail]) :-
+test('silly list', [error(_)]) :-
     quickcheck(prop_silly_list/1).
 
 :- end_tests(list).

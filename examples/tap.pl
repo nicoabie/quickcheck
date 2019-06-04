@@ -29,7 +29,7 @@ prop_atom_lengths(A:atom) :-
 'reverse does not change length' :-
     quickcheck(prop_reverse_length/1).
 
-'always fails'(fail) :-
+'always fails'(error(_)) :-
     quickcheck(prop_nonsense/2).
 
 'atom_length/2 and length/2 agree' :-
