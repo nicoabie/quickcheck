@@ -21,6 +21,7 @@ test_count_generator(X) :-
   arbitrary/integer,
   arbitrary/list,
   arbitrary/negative_integer,
+  composite/many_arguments,
   composite/single_argument,
   shrink/string,
   shrink/composite_many,
