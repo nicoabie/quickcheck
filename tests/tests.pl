@@ -11,6 +11,11 @@
 
 :- set_setting(quickcheck:test_count, 100). 
 
+% This gen will be used across all tests with a forall processing option
+test_count_generator(X) :-
+  setting(quickcheck:test_count, TestCount),
+  between(1, TestCount, X).
+
 :- load_files([
   arbitrary/float,
   arbitrary/integer,

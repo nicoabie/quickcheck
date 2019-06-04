@@ -16,8 +16,7 @@ prop_even_numbers(E:even) :-
   E mod 2 =:= 0,
   E < 12.
 
-% TODO find a way to use setting(test_count, TestCount) instead of nasty hard-coded 200.
-test('all even numbers mod two equals zero', [forall(between(1, 200, _))]) :-
+test('all even numbers mod two equals zero', [forall(test_count_generator(_))]) :-
   catch(quickcheck(prop_even_numbers/1), error(counter_example, [E:even]), true),
   E >= 12.
 
@@ -27,8 +26,7 @@ prop_odd_plus_even(O:odd, E:even) :-
   is_of_type(odd, Sum),
   Sum < 4.
 
-% TODO find a way to use setting(test_count, TestCount) instead of nasty hard-coded 200.
-test('even numbers plus odd numbers gives odd', [forall(between(1, 200, _))]) :-
+test('even numbers plus odd numbers gives odd', [forall(test_count_generator(_))]) :-
   catch(quickcheck(prop_odd_plus_even/2), error(counter_example, [O:odd, E:even]), true),
   S is O + E,
   S >= 4.
