@@ -16,9 +16,19 @@ Describe properties of your predicates and let `library(quickheck)` generate tes
         reverse(L, R),
         reverse(R, L).
 
+    prop_silly_list(L:list(integer)) :-
+        length(L, Len),
+        Len =:= 3.  % nonsense!
+
     ?- quickcheck(prop_reverse_twice/1).
     100 tests OK
     true.
+
+    ?- quickcheck(prop_silly_list/1).
+    Shrinking to depth 1
+    Failed test prop_silly_list([]:list(integer))
+    false.
+
 
 ## Installation
 

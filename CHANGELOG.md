@@ -1,3 +1,8 @@
+# v0.3.0 (2019-06-04)
+
+  * Implement compositiona shrinker
+  * Add more examples on how to use it
+
 # v0.2.3 (2019-05-09)
 
   * Fix issue #4
