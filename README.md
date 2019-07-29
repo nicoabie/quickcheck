@@ -1,9 +1,11 @@
-# quickcheck
+<h3 align="center">
+  <img align="center" src="https://raw.githubusercontent.com/nicoabie/quickcheck/master/logo/owly.png" alt="quickcheck logo" />
+</h3>
 
 Randomized testing of program properties in the spirit of [QuickCheck](http://hackage.haskell.org/package/QuickCheck).  
 Describe properties of your predicates and let `library(quickheck)` generate test cases for you.  
 [![CircleCI](https://circleci.com/gh/nicoabie/quickcheck.svg?style=shield)](https://circleci.com/gh/nicoabie/quickcheck)
-[![SemVer](https://img.shields.io/:SemVer-0.2.3-brightgreen.svg)](https://semver.org/)
+[![SemVer](https://img.shields.io/:SemVer-0.3.0-brightgreen.svg)](https://semver.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/nicoabie/quickcheck/labels/good%20first%20issue)
 [![License](https://img.shields.io/badge/license-UNLICENSE-brightgreen.svg)](https://unlicense.org)
 
