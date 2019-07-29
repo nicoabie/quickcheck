@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img align="center" src="https://raw.githubusercontent.com/nicoabie/quickcheck/master/logo/owly.png" alt="quickcheck logo" />
+  <img align="center" src="https://raw.githubusercontent.com/nicoabie/quickcheck/master/logo/owly.svg" alt="quickcheck logo" />
 </h3>
 
 Randomized testing of program properties in the spirit of [QuickCheck](http://hackage.haskell.org/package/QuickCheck).  
